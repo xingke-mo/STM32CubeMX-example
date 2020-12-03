@@ -71,7 +71,7 @@
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef        hRTC_Handle;
 /* Private function prototypes -----------------------------------------------*/
-void RTC_Alarm_IRQHandler(void);
+void RTC_Alarm_IRQHandler( void );
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -83,123 +83,130 @@ void RTC_Alarm_IRQHandler(void);
   * @param  TickPriority Tick interrupt priority.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
+HAL_StatusTypeDef HAL_InitTick( uint32_t TickPriority )
 {
-  __IO uint32_t counter = 0U;
+    __IO uint32_t counter = 0U;
 
-  RCC_OscInitTypeDef        RCC_OscInitStruct;
-  RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
-  HAL_StatusTypeDef         status;
+    RCC_OscInitTypeDef        RCC_OscInitStruct;
+    RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
+    HAL_StatusTypeDef         status;
 
 #ifdef RTC_CLOCK_SOURCE_LSE
-  /* Configue LSE as RTC clock soucre */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+    /* Configue LSE as RTC clock soucre */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
 #elif defined (RTC_CLOCK_SOURCE_LSI)
-  /* Configue LSI as RTC clock soucre */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+    /* Configue LSI as RTC clock soucre */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    RCC_OscInitStruct.LSIState = RCC_LSI_ON;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
 #elif defined (RTC_CLOCK_SOURCE_HSE)
-  /* Configue HSE as RTC clock soucre */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_HSE_DIV128;
+    /* Configue HSE as RTC clock soucre */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_HSE_DIV128;
 #else
 #error Please select the RTC Clock source
 #endif /* RTC_CLOCK_SOURCE_LSE */
-  status = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  if (status == HAL_OK)
-  {
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    status = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
-    if (status == HAL_OK)
-    {
-      /* Enable RTC Clock */
-      __HAL_RCC_RTC_ENABLE();
+    status = HAL_RCC_OscConfig( &RCC_OscInitStruct );
 
-      /* Configure RTC time base to 10Khz */
-      hRTC_Handle.Instance = RTC;
-      hRTC_Handle.Init.AsynchPrediv = (HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_RTC) / 10000) - 1;
-      hRTC_Handle.Init.OutPut = RTC_OUTPUTSOURCE_NONE;
-      status = HAL_RTC_Init(&hRTC_Handle);
+    if( status == HAL_OK )
+    {
+        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+        status = HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct );
+
+        if( status == HAL_OK )
+        {
+            /* Enable RTC Clock */
+            __HAL_RCC_RTC_ENABLE();
+
+            /* Configure RTC time base to 10Khz */
+            hRTC_Handle.Instance = RTC;
+            hRTC_Handle.Init.AsynchPrediv = ( HAL_RCCEx_GetPeriphCLKFreq( RCC_PERIPHCLK_RTC ) / 10000 ) - 1;
+            hRTC_Handle.Init.OutPut = RTC_OUTPUTSOURCE_NONE;
+            status = HAL_RTC_Init( &hRTC_Handle );
+        }
     }
-  }
-  if (status == HAL_OK)
-  {
-    /* Disable the write protection for RTC registers */
-    __HAL_RTC_WRITEPROTECTION_DISABLE(&hRTC_Handle);
 
-    /* Clear flag alarm A */
-    __HAL_RTC_ALARM_CLEAR_FLAG(&hRTC_Handle, RTC_FLAG_ALRAF);
-
-    counter = 0U;
-    /* Wait till RTC ALRAF flag is set and if Time out is reached exit */
-    while (__HAL_RTC_ALARM_GET_FLAG(&hRTC_Handle, RTC_FLAG_ALRAF) != RESET)
+    if( status == HAL_OK )
     {
-      if (counter++ == SystemCoreClock / 48U) /* Timeout = ~ 1s */
-      {
-        status = HAL_ERROR;
-      }
+        /* Disable the write protection for RTC registers */
+        __HAL_RTC_WRITEPROTECTION_DISABLE( &hRTC_Handle );
+
+        /* Clear flag alarm A */
+        __HAL_RTC_ALARM_CLEAR_FLAG( &hRTC_Handle, RTC_FLAG_ALRAF );
+
+        counter = 0U;
+
+        /* Wait till RTC ALRAF flag is set and if Time out is reached exit */
+        while( __HAL_RTC_ALARM_GET_FLAG( &hRTC_Handle, RTC_FLAG_ALRAF ) != RESET )
+        {
+            if( counter++ == SystemCoreClock / 48U ) /* Timeout = ~ 1s */
+            {
+                status = HAL_ERROR;
+            }
+        }
     }
-  }
-  if (status == HAL_OK)
-  {
-    /* Set RTC COUNTER MSB word */
-    hRTC_Handle.Instance->ALRH = 0x00U;
-    /* Set RTC COUNTER LSB word */
-    hRTC_Handle.Instance->ALRL = 0x09U;
 
-    /* RTC Alarm Interrupt Configuration: EXTI configuration */
-    __HAL_RTC_ALARM_EXTI_ENABLE_IT();
-    __HAL_RTC_ALARM_EXTI_ENABLE_RISING_EDGE();
-
-    /* Clear Second and overflow flags */
-    CLEAR_BIT(hRTC_Handle.Instance->CRL, (RTC_FLAG_SEC | RTC_FLAG_OW));
-
-    /* Set RTC COUNTER MSB word */
-    hRTC_Handle.Instance->CNTH = 0x00U;
-    /* Set RTC COUNTER LSB word */
-    hRTC_Handle.Instance->CNTL = 0x00U;
-
-    /* Configure the Alarm interrupt */
-    __HAL_RTC_ALARM_ENABLE_IT(&hRTC_Handle, RTC_IT_ALRA);
-
-    /* Enable the write protection for RTC registers */
-    __HAL_RTC_WRITEPROTECTION_ENABLE(&hRTC_Handle);
-
-    /* Wait till RTC is in INIT state and if Time out is reached exit */
-    counter = 0U;
-    while ((hRTC_Handle.Instance->CRL & RTC_CRL_RTOFF) == (uint32_t)RESET)
+    if( status == HAL_OK )
     {
-      if (counter++ == SystemCoreClock / 48U) /* Timeout = ~ 1s */
-      {
-        status = HAL_ERROR;
-      }
-    } 
-  }
-  if (status == HAL_OK)
-  {
-    /* Enable the RTC global Interrupt */
-    HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
+        /* Set RTC COUNTER MSB word */
+        hRTC_Handle.Instance->ALRH = 0x00U;
+        /* Set RTC COUNTER LSB word */
+        hRTC_Handle.Instance->ALRL = 0x09U;
 
-    /* Configure the SysTick IRQ priority */
-    if (TickPriority < (1UL << __NVIC_PRIO_BITS))
-    {
-      HAL_NVIC_SetPriority(RTC_Alarm_IRQn, TickPriority ,0U);
-      uwTickPrio = TickPriority;
+        /* RTC Alarm Interrupt Configuration: EXTI configuration */
+        __HAL_RTC_ALARM_EXTI_ENABLE_IT();
+        __HAL_RTC_ALARM_EXTI_ENABLE_RISING_EDGE();
+
+        /* Clear Second and overflow flags */
+        CLEAR_BIT( hRTC_Handle.Instance->CRL, ( RTC_FLAG_SEC | RTC_FLAG_OW ) );
+
+        /* Set RTC COUNTER MSB word */
+        hRTC_Handle.Instance->CNTH = 0x00U;
+        /* Set RTC COUNTER LSB word */
+        hRTC_Handle.Instance->CNTL = 0x00U;
+
+        /* Configure the Alarm interrupt */
+        __HAL_RTC_ALARM_ENABLE_IT( &hRTC_Handle, RTC_IT_ALRA );
+
+        /* Enable the write protection for RTC registers */
+        __HAL_RTC_WRITEPROTECTION_ENABLE( &hRTC_Handle );
+
+        /* Wait till RTC is in INIT state and if Time out is reached exit */
+        counter = 0U;
+
+        while( ( hRTC_Handle.Instance->CRL & RTC_CRL_RTOFF ) == ( uint32_t )RESET )
+        {
+            if( counter++ == SystemCoreClock / 48U ) /* Timeout = ~ 1s */
+            {
+                status = HAL_ERROR;
+            }
+        }
     }
-    else
-    {
-      status = HAL_ERROR;
-    }
-  }
 
-  return status;
+    if( status == HAL_OK )
+    {
+        /* Enable the RTC global Interrupt */
+        HAL_NVIC_EnableIRQ( RTC_Alarm_IRQn );
+
+        /* Configure the SysTick IRQ priority */
+        if( TickPriority < ( 1UL << __NVIC_PRIO_BITS ) )
+        {
+            HAL_NVIC_SetPriority( RTC_Alarm_IRQn, TickPriority, 0U );
+            uwTickPrio = TickPriority;
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -208,10 +215,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   * @param  None
   * @retval None
   */
-void HAL_SuspendTick(void)
+void HAL_SuspendTick( void )
 {
-  /* Disable RTC ALARM update Interrupt */
-  __HAL_RTC_ALARM_DISABLE_IT(&hRTC_Handle, RTC_IT_ALRA);
+    /* Disable RTC ALARM update Interrupt */
+    __HAL_RTC_ALARM_DISABLE_IT( &hRTC_Handle, RTC_IT_ALRA );
 }
 
 /**
@@ -220,35 +227,35 @@ void HAL_SuspendTick(void)
   * @param  None
   * @retval None
   */
-void HAL_ResumeTick(void)
+void HAL_ResumeTick( void )
 {
-  __IO uint32_t counter = 0U;
+    __IO uint32_t counter = 0U;
 
-  /* Disable the write protection for RTC registers */
-  __HAL_RTC_WRITEPROTECTION_DISABLE(&hRTC_Handle);
+    /* Disable the write protection for RTC registers */
+    __HAL_RTC_WRITEPROTECTION_DISABLE( &hRTC_Handle );
 
-  /* Set RTC COUNTER MSB word */
-  hRTC_Handle.Instance->CNTH = 0x00U;
-  /* Set RTC COUNTER LSB word */
-  hRTC_Handle.Instance->CNTL = 0x00U;
+    /* Set RTC COUNTER MSB word */
+    hRTC_Handle.Instance->CNTH = 0x00U;
+    /* Set RTC COUNTER LSB word */
+    hRTC_Handle.Instance->CNTL = 0x00U;
 
-  /* Clear Second and overflow flags */
-  CLEAR_BIT(hRTC_Handle.Instance->CRL, (RTC_FLAG_SEC | RTC_FLAG_OW | RTC_FLAG_ALRAF));
+    /* Clear Second and overflow flags */
+    CLEAR_BIT( hRTC_Handle.Instance->CRL, ( RTC_FLAG_SEC | RTC_FLAG_OW | RTC_FLAG_ALRAF ) );
 
-  /* Enable RTC ALARM Update interrupt */
-  __HAL_RTC_ALARM_ENABLE_IT(&hRTC_Handle, RTC_IT_ALRA);
+    /* Enable RTC ALARM Update interrupt */
+    __HAL_RTC_ALARM_ENABLE_IT( &hRTC_Handle, RTC_IT_ALRA );
 
-  /* Enable the write protection for RTC registers */
-  __HAL_RTC_WRITEPROTECTION_ENABLE(&hRTC_Handle);
+    /* Enable the write protection for RTC registers */
+    __HAL_RTC_WRITEPROTECTION_ENABLE( &hRTC_Handle );
 
-  /* Wait till RTC is in INIT state and if Time out is reached exit */
-  while ((hRTC_Handle.Instance->CRL & RTC_CRL_RTOFF) == (uint32_t)RESET)
-  {
-    if (counter++ == SystemCoreClock / 48U) /* Timeout = ~ 1s */
+    /* Wait till RTC is in INIT state and if Time out is reached exit */
+    while( ( hRTC_Handle.Instance->CRL & RTC_CRL_RTOFF ) == ( uint32_t )RESET )
     {
-      break;
+        if( counter++ == SystemCoreClock / 48U ) /* Timeout = ~ 1s */
+        {
+            break;
+        }
     }
-  }
 }
 
 /**
@@ -259,42 +266,42 @@ void HAL_ResumeTick(void)
   * @param  hrtc RTC handle
   * @retval None
   */
-void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
+void HAL_RTC_AlarmAEventCallback( RTC_HandleTypeDef *hrtc )
 {
-  __IO uint32_t counter = 0U;
+    __IO uint32_t counter = 0U;
 
-  HAL_IncTick();
+    HAL_IncTick();
 
-  __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
+    __HAL_RTC_WRITEPROTECTION_DISABLE( hrtc );
 
-  /* Set RTC COUNTER MSB word */
-  WRITE_REG(hrtc->Instance->CNTH, 0x00U);
-  /* Set RTC COUNTER LSB word */
-  WRITE_REG(hrtc->Instance->CNTL, 0x00U);
+    /* Set RTC COUNTER MSB word */
+    WRITE_REG( hrtc->Instance->CNTH, 0x00U );
+    /* Set RTC COUNTER LSB word */
+    WRITE_REG( hrtc->Instance->CNTL, 0x00U );
 
-  /* Clear Second and overflow flags */
-  CLEAR_BIT(hrtc->Instance->CRL, (RTC_FLAG_SEC | RTC_FLAG_OW));
+    /* Clear Second and overflow flags */
+    CLEAR_BIT( hrtc->Instance->CRL, ( RTC_FLAG_SEC | RTC_FLAG_OW ) );
 
-  /* Enable the write protection for RTC registers */
-  __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);
+    /* Enable the write protection for RTC registers */
+    __HAL_RTC_WRITEPROTECTION_ENABLE( hrtc );
 
-  /* Wait till RTC is in INIT state and if Time out is reached exit */
-  while ((hrtc->Instance->CRL & RTC_CRL_RTOFF) == (uint32_t)RESET)
-  {
-    if (counter++ == SystemCoreClock / 48U) /* Timeout = ~ 1s */
+    /* Wait till RTC is in INIT state and if Time out is reached exit */
+    while( ( hrtc->Instance->CRL & RTC_CRL_RTOFF ) == ( uint32_t )RESET )
     {
-      break;
+        if( counter++ == SystemCoreClock / 48U ) /* Timeout = ~ 1s */
+        {
+            break;
+        }
     }
-  }
 }
 
 /**
   * @brief  This function handles RTC ALARM interrupt request.
   * @retval None
   */
-void RTC_Alarm_IRQHandler(void)
+void RTC_Alarm_IRQHandler( void )
 {
-  HAL_RTC_AlarmIRQHandler(&hRTC_Handle);
+    HAL_RTC_AlarmIRQHandler( &hRTC_Handle );
 }
 
 /**

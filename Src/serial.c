@@ -1,5 +1,5 @@
 /*
- * serial.c 
+ * serial.c
  *
  */
 
@@ -13,7 +13,7 @@
 extern TaskHandle_t xConsoleHandle;
 extern struct kfifo cdcRxFifo;
 
-xComPortHandle xSerialPortInitMinimal(int baudRate, int queueLength)
+xComPortHandle xSerialPortInitMinimal( int baudRate, int queueLength )
 {
     baudRate = baudRate;
     queueLength = queueLength;
@@ -21,20 +21,20 @@ xComPortHandle xSerialPortInitMinimal(int baudRate, int queueLength)
     return 0x00;
 }
 
-BaseType_t xSerialGetChar(xComPortHandle xPort, signed char *cRxedChar, uint32_t timeout)
+BaseType_t xSerialGetChar( xComPortHandle xPort, signed char *cRxedChar, uint32_t timeout )
 {
     static uint32_t i = 0x00;
 
     xPort = xPort;
 
-    if(i == 0x00)
+    if( i == 0x00 )
     {
-        ulTaskNotifyTake(pdTRUE, timeout);
+        ulTaskNotifyTake( pdTRUE, timeout );
 
-        i = kfifo_len(&cdcRxFifo);
+        i = kfifo_len( &cdcRxFifo );
     }
 
-    if(0x01 == kfifo_get(&cdcRxFifo, (unsigned char*) cRxedChar, 0x01))
+    if( 0x01 == kfifo_get( &cdcRxFifo, ( unsigned char * ) cRxedChar, 0x01 ) )
     {
         i--;
     }
@@ -42,22 +42,22 @@ BaseType_t xSerialGetChar(xComPortHandle xPort, signed char *cRxedChar, uint32_t
     return pdPASS;
 }
 
-BaseType_t vSerialPutString(xComPortHandle xPort, signed char *pMessage, unsigned short len)
+BaseType_t vSerialPutString( xComPortHandle xPort, signed char *pMessage, unsigned short len )
 {
     xPort = xPort;
 
 retry:
 
-   if(0x00 != CDC_Transmit_FS((uint8_t*)pMessage, len))
-   {
-       osDelay(10);
-       goto retry;
-   }
+    if( 0x00 != CDC_Transmit_FS( ( uint8_t * )pMessage, len ) )
+    {
+        osDelay( 10 );
+        goto retry;
+    }
 
-   return pdTRUE;
+    return pdTRUE;
 }
 
-BaseType_t xSerialPutChar(xComPortHandle xPort, signed char c, uint32_t timeout)
+BaseType_t xSerialPutChar( xComPortHandle xPort, signed char c, uint32_t timeout )
 {
     xPort = xPort;
     timeout = timeout;
@@ -66,9 +66,9 @@ BaseType_t xSerialPutChar(xComPortHandle xPort, signed char c, uint32_t timeout)
 
 retry:
 
-    if(0x00 != CDC_Transmit_FS((uint8_t*)&tx, 0x01))
+    if( 0x00 != CDC_Transmit_FS( ( uint8_t * )&tx, 0x01 ) )
     {
-        osDelay(10);
+        osDelay( 10 );
         goto retry;
     }
 

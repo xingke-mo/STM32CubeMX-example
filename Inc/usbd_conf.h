@@ -24,7 +24,7 @@
 #define __USBD_CONF__H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -77,7 +77,7 @@
 
 /****************************************/
 /* #define for FS and HS identification */
-#define DEVICE_FS 		0
+#define DEVICE_FS       0
 
 /**
   * @}
@@ -107,8 +107,8 @@
 
 /* For footprint reasons and since only one allocation is handled in the HID class
    driver, the malloc/free is changed into a static allocation method */
-void *USBD_static_malloc(uint32_t size);
-void USBD_static_free(void *p);
+void *USBD_static_malloc( uint32_t size );
+void USBD_static_free( void *p );
 
 /* DEBUG macros */
 

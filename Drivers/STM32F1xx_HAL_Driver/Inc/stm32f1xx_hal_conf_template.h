@@ -102,8 +102,8 @@ extern "C" {
 #if !defined  (LSI_VALUE)
 #define LSI_VALUE               40000U     /*!< LSI Typical Value in Hz */
 #endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz
-                                                The real value may vary depending on the variations
-                                                in voltage and temperature. */
+The real value may vary depending on the variations
+in voltage and temperature. */
 /**
   * @brief External Low Speed oscillator (LSE) value.
   *        This value is used by the UART, RTC HAL module to compute the system frequency
@@ -264,7 +264,7 @@ extern "C" {
 #endif /* HAL_CAN_MODULE_ENABLED */
 
 #ifdef HAL_CAN_LEGACY_MODULE_ENABLED
-  #include "Legacy/stm32f1xx_hal_can_legacy.h"
+#include "Legacy/stm32f1xx_hal_can_legacy.h"
 #endif /* HAL_CAN_LEGACY_MODULE_ENABLED */
 
 #ifdef HAL_CEC_MODULE_ENABLED
@@ -383,7 +383,7 @@ extern "C" {
   */
 #define assert_param(expr) ((expr) ? (void)0U : assert_failed((uint8_t *)__FILE__, __LINE__))
 /* Exported functions ------------------------------------------------------- */
-void assert_failed(uint8_t* file, uint32_t line);
+void assert_failed( uint8_t *file, uint32_t line );
 #else
 #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */

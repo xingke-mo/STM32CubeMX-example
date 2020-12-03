@@ -23,9 +23,9 @@
 #include "stm32f1xx_ll_rtc.h"
 #include "stm32f1xx_ll_cortex.h"
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
+    #include "stm32_assert.h"
 #else
-#define assert_param(expr) ((void)0U)
+    #define assert_param(expr) ((void)0U)
 #endif
 
 /** @addtogroup STM32F1xx_LL_Driver
@@ -93,51 +93,51 @@
   *          - SUCCESS: RTC registers are de-initialized
   *          - ERROR: RTC registers are not de-initialized
   */
-ErrorStatus LL_RTC_DeInit(RTC_TypeDef *RTCx)
+ErrorStatus LL_RTC_DeInit( RTC_TypeDef *RTCx )
 {
-  ErrorStatus status = ERROR;
+    ErrorStatus status = ERROR;
 
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Disable the write protection for RTC registers */
-  LL_RTC_DisableWriteProtection(RTCx);
+    /* Disable the write protection for RTC registers */
+    LL_RTC_DisableWriteProtection( RTCx );
 
-  /* Set Initialization mode */
-  if (LL_RTC_EnterInitMode(RTCx) != ERROR)
-  {
-    LL_RTC_WriteReg(RTCx, CNTL, 0x0000);
-    LL_RTC_WriteReg(RTCx, CNTH, 0x0000);
-    LL_RTC_WriteReg(RTCx, PRLH, 0x0000);
-    LL_RTC_WriteReg(RTCx, PRLL, 0x8000);
-    LL_RTC_WriteReg(RTCx, CRH,  0x0000);
-    LL_RTC_WriteReg(RTCx, CRL,  0x0020);
-
-    /* Reset Tamper and alternate functions configuration register */
-    LL_RTC_WriteReg(BKP, RTCCR, 0x00000000U);
-    LL_RTC_WriteReg(BKP, CR,    0x00000000U);
-    LL_RTC_WriteReg(BKP, CSR,   0x00000000U);
-
-    /* Exit Initialization Mode */
-    if (LL_RTC_ExitInitMode(RTCx) != ERROR)
+    /* Set Initialization mode */
+    if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
     {
-      /* Wait till the RTC RSF flag is set */
-      status = LL_RTC_WaitForSynchro(RTCx);
-  
-      /* Clear RSF Flag */
-      LL_RTC_ClearFlag_RS(RTCx);
-      
-      /* Enable the write protection for RTC registers */
-      LL_RTC_EnableWriteProtection(RTCx);
-    }
-  }
-  else
-  {
-    /* Enable the write protection for RTC registers */
-    LL_RTC_EnableWriteProtection(RTCx);
-  }
+        LL_RTC_WriteReg( RTCx, CNTL, 0x0000 );
+        LL_RTC_WriteReg( RTCx, CNTH, 0x0000 );
+        LL_RTC_WriteReg( RTCx, PRLH, 0x0000 );
+        LL_RTC_WriteReg( RTCx, PRLL, 0x8000 );
+        LL_RTC_WriteReg( RTCx, CRH,  0x0000 );
+        LL_RTC_WriteReg( RTCx, CRL,  0x0020 );
 
-  return status;
+        /* Reset Tamper and alternate functions configuration register */
+        LL_RTC_WriteReg( BKP, RTCCR, 0x00000000U );
+        LL_RTC_WriteReg( BKP, CR,    0x00000000U );
+        LL_RTC_WriteReg( BKP, CSR,   0x00000000U );
+
+        /* Exit Initialization Mode */
+        if( LL_RTC_ExitInitMode( RTCx ) != ERROR )
+        {
+            /* Wait till the RTC RSF flag is set */
+            status = LL_RTC_WaitForSynchro( RTCx );
+
+            /* Clear RSF Flag */
+            LL_RTC_ClearFlag_RS( RTCx );
+
+            /* Enable the write protection for RTC registers */
+            LL_RTC_EnableWriteProtection( RTCx );
+        }
+    }
+    else
+    {
+        /* Enable the write protection for RTC registers */
+        LL_RTC_EnableWriteProtection( RTCx );
+    }
+
+    return status;
 }
 
 /**
@@ -154,43 +154,46 @@ ErrorStatus LL_RTC_DeInit(RTC_TypeDef *RTCx)
   *          - SUCCESS: RTC registers are initialized
   *          - ERROR: RTC registers are not initialized
   */
-ErrorStatus LL_RTC_Init(RTC_TypeDef *RTCx, LL_RTC_InitTypeDef *RTC_InitStruct)
+ErrorStatus LL_RTC_Init( RTC_TypeDef *RTCx, LL_RTC_InitTypeDef *RTC_InitStruct )
 {
-  ErrorStatus status = ERROR;
+    ErrorStatus status = ERROR;
 
-  /* Check the parameters */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
-  assert_param(IS_LL_RTC_ASYNCH_PREDIV(RTC_InitStruct->AsynchPrescaler));
-  assert_param(IS_LL_RTC_CALIB_OUTPUT(RTC_InitStruct->OutPutSource));
-  /* Waiting for synchro */
-  if (LL_RTC_WaitForSynchro(RTCx) != ERROR)
-  {
-    /* Set Initialization mode */
-    if (LL_RTC_EnterInitMode(RTCx) != ERROR)
+    /* Check the parameters */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
+    assert_param( IS_LL_RTC_ASYNCH_PREDIV( RTC_InitStruct->AsynchPrescaler ) );
+    assert_param( IS_LL_RTC_CALIB_OUTPUT( RTC_InitStruct->OutPutSource ) );
+
+    /* Waiting for synchro */
+    if( LL_RTC_WaitForSynchro( RTCx ) != ERROR )
     {
-      /* Clear Flag Bits */
-      LL_RTC_ClearFlag_ALR(RTCx);
-      LL_RTC_ClearFlag_OW(RTCx);
-      LL_RTC_ClearFlag_SEC(RTCx);
+        /* Set Initialization mode */
+        if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
+        {
+            /* Clear Flag Bits */
+            LL_RTC_ClearFlag_ALR( RTCx );
+            LL_RTC_ClearFlag_OW( RTCx );
+            LL_RTC_ClearFlag_SEC( RTCx );
 
-      if (RTC_InitStruct->OutPutSource != LL_RTC_CALIB_OUTPUT_NONE)
-      {
-        /* Disable the selected Tamper Pin */
-        LL_RTC_TAMPER_Disable(BKP);
-      }
-      /* Set the signal which will be routed to RTC Tamper Pin */
-      LL_RTC_SetOutputSource(BKP, RTC_InitStruct->OutPutSource);
+            if( RTC_InitStruct->OutPutSource != LL_RTC_CALIB_OUTPUT_NONE )
+            {
+                /* Disable the selected Tamper Pin */
+                LL_RTC_TAMPER_Disable( BKP );
+            }
 
-      /* Configure Synchronous and Asynchronous prescaler factor */
-      LL_RTC_SetAsynchPrescaler(RTCx, RTC_InitStruct->AsynchPrescaler);
+            /* Set the signal which will be routed to RTC Tamper Pin */
+            LL_RTC_SetOutputSource( BKP, RTC_InitStruct->OutPutSource );
 
-      /* Exit Initialization Mode */
-      LL_RTC_ExitInitMode(RTCx);
+            /* Configure Synchronous and Asynchronous prescaler factor */
+            LL_RTC_SetAsynchPrescaler( RTCx, RTC_InitStruct->AsynchPrescaler );
 
-      status = SUCCESS;
+            /* Exit Initialization Mode */
+            LL_RTC_ExitInitMode( RTCx );
+
+            status = SUCCESS;
+        }
     }
-  }
-  return status;
+
+    return status;
 }
 
 /**
@@ -198,11 +201,11 @@ ErrorStatus LL_RTC_Init(RTC_TypeDef *RTCx, LL_RTC_InitTypeDef *RTC_InitStruct)
   * @param  RTC_InitStruct pointer to a @ref LL_RTC_InitTypeDef structure which will be initialized.
   * @retval None
   */
-void LL_RTC_StructInit(LL_RTC_InitTypeDef *RTC_InitStruct)
+void LL_RTC_StructInit( LL_RTC_InitTypeDef *RTC_InitStruct )
 {
-  /* Set RTC_InitStruct fields to default values */
-  RTC_InitStruct->AsynchPrescaler = RTC_ASYNCH_PRESC_DEFAULT;
-  RTC_InitStruct->OutPutSource    = LL_RTC_CALIB_OUTPUT_NONE;
+    /* Set RTC_InitStruct fields to default values */
+    RTC_InitStruct->AsynchPrescaler = RTC_ASYNCH_PRESC_DEFAULT;
+    RTC_InitStruct->OutPutSource    = LL_RTC_CALIB_OUTPUT_NONE;
 }
 
 /**
@@ -219,52 +222,54 @@ void LL_RTC_StructInit(LL_RTC_InitTypeDef *RTC_InitStruct)
   *          - SUCCESS: RTC Time register is configured
   *          - ERROR: RTC Time register is not configured
   */
-ErrorStatus LL_RTC_TIME_Init(RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_TimeTypeDef *RTC_TimeStruct)
+ErrorStatus LL_RTC_TIME_Init( RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_TimeTypeDef *RTC_TimeStruct )
 {
-  ErrorStatus status = ERROR;
-  uint32_t counter_time = 0U;
+    ErrorStatus status = ERROR;
+    uint32_t counter_time = 0U;
 
-  /* Check the parameters */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
-  assert_param(IS_LL_RTC_FORMAT(RTC_Format));
+    /* Check the parameters */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
+    assert_param( IS_LL_RTC_FORMAT( RTC_Format ) );
 
-  if (RTC_Format == LL_RTC_FORMAT_BIN)
-  {
-    assert_param(IS_LL_RTC_HOUR24(RTC_TimeStruct->Hours));
-    assert_param(IS_LL_RTC_MINUTES(RTC_TimeStruct->Minutes));
-    assert_param(IS_LL_RTC_SECONDS(RTC_TimeStruct->Seconds));
-  }
-  else
-  {
-    assert_param(IS_LL_RTC_HOUR24(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Hours)));
-    assert_param(IS_LL_RTC_MINUTES(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Minutes)));
-    assert_param(IS_LL_RTC_SECONDS(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Seconds)));
-  }
-
-  /* Enter Initialization mode */
-  if (LL_RTC_EnterInitMode(RTCx) != ERROR)
-  {
-    /* Check the input parameters format */
-    if (RTC_Format != LL_RTC_FORMAT_BIN)
+    if( RTC_Format == LL_RTC_FORMAT_BIN )
     {
-      counter_time = (uint32_t)(((uint32_t)RTC_TimeStruct->Hours * 3600U) + \
-                                ((uint32_t)RTC_TimeStruct->Minutes * 60U) + \
-                                ((uint32_t)RTC_TimeStruct->Seconds));
-      LL_RTC_TIME_Set(RTCx, counter_time);
+        assert_param( IS_LL_RTC_HOUR24( RTC_TimeStruct->Hours ) );
+        assert_param( IS_LL_RTC_MINUTES( RTC_TimeStruct->Minutes ) );
+        assert_param( IS_LL_RTC_SECONDS( RTC_TimeStruct->Seconds ) );
     }
     else
     {
-      counter_time = (((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Hours)) * 3600U) + \
-                      ((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Minutes)) * 60U) + \
-                      ((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_TimeStruct->Seconds))));
-      LL_RTC_TIME_Set(RTCx, counter_time);
+        assert_param( IS_LL_RTC_HOUR24( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Hours ) ) );
+        assert_param( IS_LL_RTC_MINUTES( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Minutes ) ) );
+        assert_param( IS_LL_RTC_SECONDS( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Seconds ) ) );
     }
-    status = SUCCESS;
-  }
-  /* Exit Initialization mode */
-  LL_RTC_ExitInitMode(RTCx);
 
-  return status;
+    /* Enter Initialization mode */
+    if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
+    {
+        /* Check the input parameters format */
+        if( RTC_Format != LL_RTC_FORMAT_BIN )
+        {
+            counter_time = ( uint32_t )( ( ( uint32_t )RTC_TimeStruct->Hours * 3600U ) + \
+                                         ( ( uint32_t )RTC_TimeStruct->Minutes * 60U ) + \
+                                         ( ( uint32_t )RTC_TimeStruct->Seconds ) );
+            LL_RTC_TIME_Set( RTCx, counter_time );
+        }
+        else
+        {
+            counter_time = ( ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Hours ) ) * 3600U ) + \
+                             ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Minutes ) ) * 60U ) + \
+                             ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_TimeStruct->Seconds ) ) ) );
+            LL_RTC_TIME_Set( RTCx, counter_time );
+        }
+
+        status = SUCCESS;
+    }
+
+    /* Exit Initialization mode */
+    LL_RTC_ExitInitMode( RTCx );
+
+    return status;
 }
 
 /**
@@ -272,12 +277,12 @@ ErrorStatus LL_RTC_TIME_Init(RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_Time
   * @param  RTC_TimeStruct pointer to a @ref LL_RTC_TimeTypeDef structure which will be initialized.
   * @retval None
   */
-void LL_RTC_TIME_StructInit(LL_RTC_TimeTypeDef *RTC_TimeStruct)
+void LL_RTC_TIME_StructInit( LL_RTC_TimeTypeDef *RTC_TimeStruct )
 {
-  /* Time = 00h:00min:00sec */
-  RTC_TimeStruct->Hours      = 0U;
-  RTC_TimeStruct->Minutes    = 0U;
-  RTC_TimeStruct->Seconds    = 0U;
+    /* Time = 00h:00min:00sec */
+    RTC_TimeStruct->Hours      = 0U;
+    RTC_TimeStruct->Minutes    = 0U;
+    RTC_TimeStruct->Seconds    = 0U;
 }
 
 /**
@@ -294,51 +299,53 @@ void LL_RTC_TIME_StructInit(LL_RTC_TimeTypeDef *RTC_TimeStruct)
   *          - SUCCESS: ALARM registers are configured
   *          - ERROR: ALARM registers are not configured
   */
-ErrorStatus LL_RTC_ALARM_Init(RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_AlarmTypeDef *RTC_AlarmStruct)
+ErrorStatus LL_RTC_ALARM_Init( RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_AlarmTypeDef *RTC_AlarmStruct )
 {
-  ErrorStatus status = ERROR;
-  uint32_t counter_alarm = 0U;
-  /* Check the parameters */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
-  assert_param(IS_LL_RTC_FORMAT(RTC_Format));
+    ErrorStatus status = ERROR;
+    uint32_t counter_alarm = 0U;
+    /* Check the parameters */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
+    assert_param( IS_LL_RTC_FORMAT( RTC_Format ) );
 
-  if (RTC_Format == LL_RTC_FORMAT_BIN)
-  {
-    assert_param(IS_LL_RTC_HOUR24(RTC_AlarmStruct->AlarmTime.Hours));
-    assert_param(IS_LL_RTC_MINUTES(RTC_AlarmStruct->AlarmTime.Minutes));
-    assert_param(IS_LL_RTC_SECONDS(RTC_AlarmStruct->AlarmTime.Seconds));
-  }
-  else
-  {
-    assert_param(IS_LL_RTC_HOUR24(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Hours)));
-    assert_param(IS_LL_RTC_MINUTES(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Minutes)));
-    assert_param(IS_LL_RTC_SECONDS(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Seconds)));
-  }
-
-  /* Enter Initialization mode */
-  if (LL_RTC_EnterInitMode(RTCx) != ERROR)
-  {
-    /* Check the input parameters format */
-    if (RTC_Format != LL_RTC_FORMAT_BIN)
+    if( RTC_Format == LL_RTC_FORMAT_BIN )
     {
-      counter_alarm = (uint32_t)(((uint32_t)RTC_AlarmStruct->AlarmTime.Hours * 3600U) + \
-                                 ((uint32_t)RTC_AlarmStruct->AlarmTime.Minutes * 60U) + \
-                                 ((uint32_t)RTC_AlarmStruct->AlarmTime.Seconds));
-      LL_RTC_ALARM_Set(RTCx, counter_alarm);
+        assert_param( IS_LL_RTC_HOUR24( RTC_AlarmStruct->AlarmTime.Hours ) );
+        assert_param( IS_LL_RTC_MINUTES( RTC_AlarmStruct->AlarmTime.Minutes ) );
+        assert_param( IS_LL_RTC_SECONDS( RTC_AlarmStruct->AlarmTime.Seconds ) );
     }
     else
     {
-      counter_alarm = (((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Hours)) * 3600U) + \
-                       ((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Minutes)) * 60U) + \
-                       ((uint32_t)(__LL_RTC_CONVERT_BCD2BIN(RTC_AlarmStruct->AlarmTime.Seconds))));
-      LL_RTC_ALARM_Set(RTCx, counter_alarm);
+        assert_param( IS_LL_RTC_HOUR24( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Hours ) ) );
+        assert_param( IS_LL_RTC_MINUTES( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Minutes ) ) );
+        assert_param( IS_LL_RTC_SECONDS( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Seconds ) ) );
     }
-    status = SUCCESS;
-  }
-  /* Exit Initialization mode */
-  LL_RTC_ExitInitMode(RTCx);
 
-  return status;
+    /* Enter Initialization mode */
+    if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
+    {
+        /* Check the input parameters format */
+        if( RTC_Format != LL_RTC_FORMAT_BIN )
+        {
+            counter_alarm = ( uint32_t )( ( ( uint32_t )RTC_AlarmStruct->AlarmTime.Hours * 3600U ) + \
+                                          ( ( uint32_t )RTC_AlarmStruct->AlarmTime.Minutes * 60U ) + \
+                                          ( ( uint32_t )RTC_AlarmStruct->AlarmTime.Seconds ) );
+            LL_RTC_ALARM_Set( RTCx, counter_alarm );
+        }
+        else
+        {
+            counter_alarm = ( ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Hours ) ) * 3600U ) + \
+                              ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Minutes ) ) * 60U ) + \
+                              ( ( uint32_t )( __LL_RTC_CONVERT_BCD2BIN( RTC_AlarmStruct->AlarmTime.Seconds ) ) ) );
+            LL_RTC_ALARM_Set( RTCx, counter_alarm );
+        }
+
+        status = SUCCESS;
+    }
+
+    /* Exit Initialization mode */
+    LL_RTC_ExitInitMode( RTCx );
+
+    return status;
 }
 
 /**
@@ -347,12 +354,12 @@ ErrorStatus LL_RTC_ALARM_Init(RTC_TypeDef *RTCx, uint32_t RTC_Format, LL_RTC_Ala
   * @param  RTC_AlarmStruct pointer to a @ref LL_RTC_AlarmTypeDef structure which will be initialized.
   * @retval None
   */
-void LL_RTC_ALARM_StructInit(LL_RTC_AlarmTypeDef *RTC_AlarmStruct)
+void LL_RTC_ALARM_StructInit( LL_RTC_AlarmTypeDef *RTC_AlarmStruct )
 {
-  /* Alarm Time Settings : Time = 00h:00mn:00sec */
-  RTC_AlarmStruct->AlarmTime.Hours      = 0U;
-  RTC_AlarmStruct->AlarmTime.Minutes    = 0U;
-  RTC_AlarmStruct->AlarmTime.Seconds    = 0U;
+    /* Alarm Time Settings : Time = 00h:00mn:00sec */
+    RTC_AlarmStruct->AlarmTime.Hours      = 0U;
+    RTC_AlarmStruct->AlarmTime.Minutes    = 0U;
+    RTC_AlarmStruct->AlarmTime.Seconds    = 0U;
 }
 
 /**
@@ -362,34 +369,37 @@ void LL_RTC_ALARM_StructInit(LL_RTC_AlarmTypeDef *RTC_AlarmStruct)
   *          - SUCCESS: RTC is in Init mode
   *          - ERROR: RTC is not in Init mode
   */
-ErrorStatus LL_RTC_EnterInitMode(RTC_TypeDef *RTCx)
+ErrorStatus LL_RTC_EnterInitMode( RTC_TypeDef *RTCx )
 {
-  __IO uint32_t timeout = RTC_INITMODE_TIMEOUT;
-  ErrorStatus status = SUCCESS;
-  uint32_t tmp = 0U;
+    __IO uint32_t timeout = RTC_INITMODE_TIMEOUT;
+    ErrorStatus status = SUCCESS;
+    uint32_t tmp = 0U;
 
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Wait till RTC is in INIT state and if Time out is reached exit */
-  tmp = LL_RTC_IsActiveFlag_RTOF(RTCx);
-  while ((timeout != 0U) && (tmp != 1U))
-  {
-    if (LL_SYSTICK_IsActiveCounterFlag() == 1U)
+    /* Wait till RTC is in INIT state and if Time out is reached exit */
+    tmp = LL_RTC_IsActiveFlag_RTOF( RTCx );
+
+    while( ( timeout != 0U ) && ( tmp != 1U ) )
     {
-      timeout --;
-    }
-    tmp = LL_RTC_IsActiveFlag_RTOF(RTCx);
-    if (timeout == 0U)
-    {
-      status = ERROR;
-    }
-  }
+        if( LL_SYSTICK_IsActiveCounterFlag() == 1U )
+        {
+            timeout --;
+        }
 
-  /* Disable the write protection for RTC registers */
-  LL_RTC_DisableWriteProtection(RTCx);
+        tmp = LL_RTC_IsActiveFlag_RTOF( RTCx );
 
-  return status;
+        if( timeout == 0U )
+        {
+            status = ERROR;
+        }
+    }
+
+    /* Disable the write protection for RTC registers */
+    LL_RTC_DisableWriteProtection( RTCx );
+
+    return status;
 }
 
 /**
@@ -401,33 +411,37 @@ ErrorStatus LL_RTC_EnterInitMode(RTC_TypeDef *RTCx)
   *          - SUCCESS: RTC exited from in Init mode
   *          - ERROR: Not applicable
   */
-ErrorStatus LL_RTC_ExitInitMode(RTC_TypeDef *RTCx)
+ErrorStatus LL_RTC_ExitInitMode( RTC_TypeDef *RTCx )
 {
-  __IO uint32_t timeout = RTC_INITMODE_TIMEOUT;
-  ErrorStatus status = SUCCESS;
-  uint32_t tmp = 0U;
+    __IO uint32_t timeout = RTC_INITMODE_TIMEOUT;
+    ErrorStatus status = SUCCESS;
+    uint32_t tmp = 0U;
 
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Disable initialization mode */
-  LL_RTC_EnableWriteProtection(RTCx);
+    /* Disable initialization mode */
+    LL_RTC_EnableWriteProtection( RTCx );
 
-  /* Wait till RTC is in INIT state and if Time out is reached exit */
-  tmp = LL_RTC_IsActiveFlag_RTOF(RTCx);
-  while ((timeout != 0U) && (tmp != 1U))
-  {
-    if (LL_SYSTICK_IsActiveCounterFlag() == 1U)
+    /* Wait till RTC is in INIT state and if Time out is reached exit */
+    tmp = LL_RTC_IsActiveFlag_RTOF( RTCx );
+
+    while( ( timeout != 0U ) && ( tmp != 1U ) )
     {
-      timeout --;
+        if( LL_SYSTICK_IsActiveCounterFlag() == 1U )
+        {
+            timeout --;
+        }
+
+        tmp = LL_RTC_IsActiveFlag_RTOF( RTCx );
+
+        if( timeout == 0U )
+        {
+            status = ERROR;
+        }
     }
-    tmp = LL_RTC_IsActiveFlag_RTOF(RTCx);
-    if (timeout == 0U)
-    {
-      status = ERROR;
-    }
-  }
-  return status;
+
+    return status;
 }
 
 /**
@@ -438,22 +452,23 @@ ErrorStatus LL_RTC_ExitInitMode(RTC_TypeDef *RTCx)
   *          - SUCCESS: RTC Counter register configured
   *          - ERROR: Not applicable
   */
-ErrorStatus LL_RTC_TIME_SetCounter(RTC_TypeDef *RTCx, uint32_t TimeCounter)
+ErrorStatus LL_RTC_TIME_SetCounter( RTC_TypeDef *RTCx, uint32_t TimeCounter )
 {
-  ErrorStatus status = ERROR;
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    ErrorStatus status = ERROR;
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Enter Initialization mode */
-  if (LL_RTC_EnterInitMode(RTCx) != ERROR)
-  {
-    LL_RTC_TIME_Set(RTCx, TimeCounter);
-    status = SUCCESS;
-  }
-  /* Exit Initialization mode */
-  LL_RTC_ExitInitMode(RTCx);
+    /* Enter Initialization mode */
+    if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
+    {
+        LL_RTC_TIME_Set( RTCx, TimeCounter );
+        status = SUCCESS;
+    }
 
-  return status;
+    /* Exit Initialization mode */
+    LL_RTC_ExitInitMode( RTCx );
+
+    return status;
 }
 
 /**
@@ -464,22 +479,23 @@ ErrorStatus LL_RTC_TIME_SetCounter(RTC_TypeDef *RTCx, uint32_t TimeCounter)
   *          - SUCCESS: RTC exited from in Init mode
   *          - ERROR: Not applicable
   */
-ErrorStatus LL_RTC_ALARM_SetCounter(RTC_TypeDef *RTCx, uint32_t AlarmCounter)
+ErrorStatus LL_RTC_ALARM_SetCounter( RTC_TypeDef *RTCx, uint32_t AlarmCounter )
 {
-  ErrorStatus status = ERROR;
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    ErrorStatus status = ERROR;
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Enter Initialization mode */
-  if (LL_RTC_EnterInitMode(RTCx) != ERROR)
-  {
-    LL_RTC_ALARM_Set(RTCx, AlarmCounter);
-    status = SUCCESS;
-  }
-  /* Exit Initialization mode */
-  LL_RTC_ExitInitMode(RTCx);
+    /* Enter Initialization mode */
+    if( LL_RTC_EnterInitMode( RTCx ) != ERROR )
+    {
+        LL_RTC_ALARM_Set( RTCx, AlarmCounter );
+        status = SUCCESS;
+    }
 
-  return status;
+    /* Exit Initialization mode */
+    LL_RTC_ExitInitMode( RTCx );
+
+    return status;
 }
 
 /**
@@ -491,34 +507,37 @@ ErrorStatus LL_RTC_ALARM_SetCounter(RTC_TypeDef *RTCx, uint32_t AlarmCounter)
   *          - SUCCESS: RTC registers are synchronised
   *          - ERROR: RTC registers are not synchronised
   */
-ErrorStatus LL_RTC_WaitForSynchro(RTC_TypeDef *RTCx)
+ErrorStatus LL_RTC_WaitForSynchro( RTC_TypeDef *RTCx )
 {
-  __IO uint32_t timeout = RTC_SYNCHRO_TIMEOUT;
-  ErrorStatus status = SUCCESS;
-  uint32_t tmp = 0U;
+    __IO uint32_t timeout = RTC_SYNCHRO_TIMEOUT;
+    ErrorStatus status = SUCCESS;
+    uint32_t tmp = 0U;
 
-  /* Check the parameter */
-  assert_param(IS_RTC_ALL_INSTANCE(RTCx));
+    /* Check the parameter */
+    assert_param( IS_RTC_ALL_INSTANCE( RTCx ) );
 
-  /* Clear RSF flag */
-  LL_RTC_ClearFlag_RS(RTCx);
+    /* Clear RSF flag */
+    LL_RTC_ClearFlag_RS( RTCx );
 
-  /* Wait the registers to be synchronised */
-  tmp = LL_RTC_IsActiveFlag_RS(RTCx);
-  while ((timeout != 0U) && (tmp != 0U))
-  {
-    if (LL_SYSTICK_IsActiveCounterFlag() == 1U)
+    /* Wait the registers to be synchronised */
+    tmp = LL_RTC_IsActiveFlag_RS( RTCx );
+
+    while( ( timeout != 0U ) && ( tmp != 0U ) )
     {
-      timeout--;
-    }
-    tmp = LL_RTC_IsActiveFlag_RS(RTCx);
-    if (timeout == 0U)
-    {
-      status = ERROR;
-    }
-  }
+        if( LL_SYSTICK_IsActiveCounterFlag() == 1U )
+        {
+            timeout--;
+        }
 
-  return (status);
+        tmp = LL_RTC_IsActiveFlag_RS( RTCx );
+
+        if( timeout == 0U )
+        {
+            status = ERROR;
+        }
+    }
+
+    return ( status );
 }
 
 /**

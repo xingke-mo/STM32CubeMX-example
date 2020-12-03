@@ -865,9 +865,9 @@ extern "C" {
 /** @addtogroup GPIOEx_Exported_Functions_Group1
   * @{
   */
-void HAL_GPIOEx_ConfigEventout(uint32_t GPIO_PortSource, uint32_t GPIO_PinSource);
-void HAL_GPIOEx_EnableEventout(void);
-void HAL_GPIOEx_DisableEventout(void);
+void HAL_GPIOEx_ConfigEventout( uint32_t GPIO_PortSource, uint32_t GPIO_PinSource );
+void HAL_GPIOEx_EnableEventout( void );
+void HAL_GPIOEx_DisableEventout( void );
 
 /**
   * @}

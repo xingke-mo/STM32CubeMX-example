@@ -24,7 +24,7 @@
 #define __USB_DEVICE__H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -76,7 +76,7 @@
   */
 
 /** USB Device initialization function. */
-void MX_USB_DEVICE_Init(void);
+void MX_USB_DEVICE_Init( void );
 
 /*
  * -- Insert functions declaration here --

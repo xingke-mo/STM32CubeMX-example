@@ -81,10 +81,10 @@ extern "C" {
   */
 typedef struct
 {
-  uint32_t Tamper;                      /*!< Specifies the Tamper Pin.
+    uint32_t Tamper;                      /*!< Specifies the Tamper Pin.
                                              This parameter can be a value of @ref  RTCEx_Tamper_Pins_Definitions */
 
-  uint32_t Trigger;                     /*!< Specifies the Tamper Trigger.
+    uint32_t Trigger;                     /*!< Specifies the Tamper Trigger.
                                              This parameter can be a value of @ref  RTCEx_Tamper_Trigger_Definitions */
 
 } RTC_TamperTypeDef;
@@ -354,12 +354,12 @@ typedef struct
 /** @addtogroup RTCEx_Exported_Functions_Group1
   * @{
   */
-HAL_StatusTypeDef HAL_RTCEx_SetTamper(RTC_HandleTypeDef *hrtc, RTC_TamperTypeDef *sTamper);
-HAL_StatusTypeDef HAL_RTCEx_SetTamper_IT(RTC_HandleTypeDef *hrtc, RTC_TamperTypeDef *sTamper);
-HAL_StatusTypeDef HAL_RTCEx_DeactivateTamper(RTC_HandleTypeDef *hrtc, uint32_t Tamper);
-void              HAL_RTCEx_TamperIRQHandler(RTC_HandleTypeDef *hrtc);
-void              HAL_RTCEx_Tamper1EventCallback(RTC_HandleTypeDef *hrtc);
-HAL_StatusTypeDef HAL_RTCEx_PollForTamper1Event(RTC_HandleTypeDef *hrtc, uint32_t Timeout);
+HAL_StatusTypeDef HAL_RTCEx_SetTamper( RTC_HandleTypeDef *hrtc, RTC_TamperTypeDef *sTamper );
+HAL_StatusTypeDef HAL_RTCEx_SetTamper_IT( RTC_HandleTypeDef *hrtc, RTC_TamperTypeDef *sTamper );
+HAL_StatusTypeDef HAL_RTCEx_DeactivateTamper( RTC_HandleTypeDef *hrtc, uint32_t Tamper );
+void              HAL_RTCEx_TamperIRQHandler( RTC_HandleTypeDef *hrtc );
+void              HAL_RTCEx_Tamper1EventCallback( RTC_HandleTypeDef *hrtc );
+HAL_StatusTypeDef HAL_RTCEx_PollForTamper1Event( RTC_HandleTypeDef *hrtc, uint32_t Timeout );
 
 /**
   * @}
@@ -369,11 +369,11 @@ HAL_StatusTypeDef HAL_RTCEx_PollForTamper1Event(RTC_HandleTypeDef *hrtc, uint32_
 /** @addtogroup RTCEx_Exported_Functions_Group2
   * @{
   */
-HAL_StatusTypeDef HAL_RTCEx_SetSecond_IT(RTC_HandleTypeDef *hrtc);
-HAL_StatusTypeDef HAL_RTCEx_DeactivateSecond(RTC_HandleTypeDef *hrtc);
-void              HAL_RTCEx_RTCIRQHandler(RTC_HandleTypeDef *hrtc);
-void              HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc);
-void              HAL_RTCEx_RTCEventErrorCallback(RTC_HandleTypeDef *hrtc);
+HAL_StatusTypeDef HAL_RTCEx_SetSecond_IT( RTC_HandleTypeDef *hrtc );
+HAL_StatusTypeDef HAL_RTCEx_DeactivateSecond( RTC_HandleTypeDef *hrtc );
+void              HAL_RTCEx_RTCIRQHandler( RTC_HandleTypeDef *hrtc );
+void              HAL_RTCEx_RTCEventCallback( RTC_HandleTypeDef *hrtc );
+void              HAL_RTCEx_RTCEventErrorCallback( RTC_HandleTypeDef *hrtc );
 
 /**
   * @}
@@ -383,10 +383,10 @@ void              HAL_RTCEx_RTCEventErrorCallback(RTC_HandleTypeDef *hrtc);
 /** @addtogroup RTCEx_Exported_Functions_Group3
   * @{
   */
-void              HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister, uint32_t Data);
-uint32_t          HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister);
+void              HAL_RTCEx_BKUPWrite( RTC_HandleTypeDef *hrtc, uint32_t BackupRegister, uint32_t Data );
+uint32_t          HAL_RTCEx_BKUPRead( RTC_HandleTypeDef *hrtc, uint32_t BackupRegister );
 
-HAL_StatusTypeDef HAL_RTCEx_SetSmoothCalib(RTC_HandleTypeDef *hrtc, uint32_t SmoothCalibPeriod, uint32_t SmoothCalibPlusPulses, uint32_t SmouthCalibMinusPulsesValue);
+HAL_StatusTypeDef HAL_RTCEx_SetSmoothCalib( RTC_HandleTypeDef *hrtc, uint32_t SmoothCalibPeriod, uint32_t SmoothCalibPlusPulses, uint32_t SmouthCalibMinusPulsesValue );
 /**
   * @}
   */
